@@ -10,9 +10,12 @@ import {
   useFetcher,
   useLoaderData,
   useNavigate,
+  useNavigation,
   useSearchParams,
 } from "react-router";
 import type { Route } from "./+types/product";
+import Loading from "~/components/loading";
+import { useEffect } from "react";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
@@ -54,6 +57,8 @@ const Product = () => {
   const { product } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
 
   const handleUpdate = (id: number) => {
     navigate(`/dashboard/product_item/${id}`);
@@ -74,11 +79,17 @@ const Product = () => {
   const statusCode = searchParams.get("status");
   const error = searchParams.get("error");
 
+  useEffect(() => {
+    if (isLoading) {
+      <Loading />;
+    }
+  }, [isLoading]);
+
   return (
     <div className="p-10">
       <div className="flex justify-between mb-5 text-2xl p-1">
         <h1>Product List</h1>
-        <Link to={`/dashboard/product_item/${0}`}>
+        <Link to={`/dashboard/create_product`}>
           <Button>Add Product</Button>
         </Link>
       </div>

@@ -14,6 +14,7 @@ export default [
     ),
     route("product", "routes/products/product.tsx"),
     route("product_item/:productId", "routes/products/product_item.tsx"),
+    route("create_product", "routes/products/product_item_create.tsx"),
     route("order", "routes/order.tsx"),
     route(
       "update_delivery_status/:orderId",

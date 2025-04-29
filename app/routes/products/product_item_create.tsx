@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Route } from "./+types/product_item";
-import { CreateMulti, Get, UpdateMulti } from "~/components/data";
+import { CreateMulti } from "~/components/data";
 import { authCookie, userIdCookie } from "~/cookies.server";
 import {
   Form,
@@ -16,28 +16,17 @@ import Input from "~/components/input";
 import Button from "~/components/button";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
   const userIDH = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
   const userId = (await userIdCookie.parse(userIDH)) || null;
-
-  const { productId } = params;
-  try {
-    const res = await Get(Number(productId), token, "product");
-    return { product: res?.results, userId: userId };
-  } catch (error) {
-    return { error };
-  }
+  return { userId: userId };
 }
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
-  const ProductId = formData.get("id") as string;
-  const userID = formData.get("userId") as string;
   const imageUrl = formData.get("imageUrl");
+  const userID = formData.get("userId") as string;
 
   const formPayload = new FormData();
-  formPayload.append("id", ProductId);
   formPayload.append("userId", userID);
   formPayload.append("name", formData.get("name") as string);
   formPayload.append("color", formData.get("color") as string);
@@ -49,7 +38,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const token = (await authCookie.parse(cookieHeader)) || null;
 
   try {
-    const response = await UpdateMulti(formPayload, token, "product");
+    const response = await CreateMulti(formPayload, token, "product");
 
     if (response.success) {
       return redirect(
@@ -57,33 +46,21 @@ export const action = async ({ request }: Route.ActionArgs) => {
       );
     } else {
       return redirect(
-        `/dashboard/product_item/${Number(ProductId)}?error=${
-          response.message
-        }&status=${response.statusCode}`
+        `/dashboard/create_product?error=${response.message}&status=${response.statusCode}`
       );
     }
   } catch (error: any) {
-    return redirect(`/dashboard/product_item?error=${error}`);
+    return redirect(`/dashboard/create_product?error=${error}`);
   }
 };
 
 const ProductItem = () => {
-  const { product, userId } = useLoaderData<typeof loader>();
+  const { userId } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
-  const isLoading = navigation.state === "submitting";
-  const [formData, setFormData] = useState({
-    name: product?.name,
-    color: product?.color,
-    size: product?.size,
-    price: product?.price,
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const isSubmitting = navigation.state === "submitting";
+  const isLoading = navigation.state === "loading";
 
   const [searchParams, setSearchParams] = useSearchParams();
-
   const message = searchParams.get("message");
   const statusCode = searchParams.get("status");
   const error = searchParams.get("error");
@@ -98,45 +75,24 @@ const ProductItem = () => {
         <p>{error}</p>
       </div>
       <Form method="post" encType="multipart/form-data">
-        <Input hidden name="id" type="number" value={product?.id} />
         <Input hidden name="userId" type="text" value={userId} />
         <div className="sm:p-10">
-          <h1 className="text-2xl">Update Product</h1>
+          <h1 className="text-2xl">Create Product</h1>
           <div className="mt-6">
             <Label>Product Name</Label>
-            <Input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            />
+            <Input type="text" name="name" />
           </div>
           <div className="mt-5">
             <Label>Product Color</Label>
-            <Input
-              type="text"
-              name="color"
-              value={formData.color}
-              onChange={handleChange}
-            />
+            <Input type="text" name="color" />
           </div>
           <div className="mt-5">
             <Label>Product Size</Label>
-            <Input
-              type="text"
-              name="size"
-              value={formData.size}
-              onChange={handleChange}
-            />
+            <Input type="text" name="size" />
           </div>
           <div className="mt-5">
             <Label>Product Price</Label>
-            <Input
-              type="text"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-            />
+            <Input type="text" name="price" />
           </div>
           <div className="mt-5">
             <Label>Product Image</Label>
@@ -149,7 +105,7 @@ const ProductItem = () => {
           <div className="mt-5 flex gap-3">
             <Button className="w-full">
               {" "}
-              {isLoading ? "Updating..." : "Update"}
+              {isSubmitting ? "Creating..." : "Create"}
             </Button>
             <Link
               to={"/dashboard/product"}
