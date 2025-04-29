@@ -95,7 +95,9 @@ const Table: React.FC<EnhancedTableProps> = ({
                   return (
                     <td key={col.key} className="px-4 py-2 border-t">
                       {/* {col.render ? col.render(value, row) : value} */}
-                      {col.render ? col.render(value, row) : value || "No data"}
+                      {col?.render
+                        ? col.render(value, row)
+                        : value || "No data"}
                     </td>
                   );
                 })}

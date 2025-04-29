@@ -33,16 +33,7 @@ const OrderCom = () => {
   const handleStatusUpdate = (id: number) => {
     navigate(`/dashboard/update_delivery_status/${id}`);
   };
-  // const handleDelete = (id: number) => {
-  //   fetcher.submit(
-  //     {
-  //       productId: id.toString(),
-  //     },
-  //     {
-  //       method: "post",
-  //     }
-  //   );
-  // };
+
   return (
     <div className="p-10">
       <div className="flex justify-between mb-5 text-2xl p-1">

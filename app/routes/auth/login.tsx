@@ -33,22 +33,27 @@ export async function action({ request }: Route.ActionArgs) {
   const password = formData.get("password") as string;
 
   const res = await LoginReq(username, password);
-
-  if (res.success) {
-    return redirect(
-      `/dashboard?message=${res.message}&status=${res.statusCode}`,
-      {
-        headers: {
-          "Set-Cookie": [
-            await authCookie.serialize(res.results.token),
-            await userIdCookie.serialize(res.results.id),
-            await userRoleCookie.serialize(res.results.role),
-          ].join(", "),
-        },
-      }
-    );
-  } else {
-    return redirect(`/login?error=${res.message}&status=${res.statusCode}`);
+  try {
+    if (res?.success) {
+      return redirect(
+        `/dashboard?message=${res?.message}&status=${res?.statusCode}`,
+        {
+          headers: {
+            "Set-Cookie": [
+              await authCookie.serialize(res?.results.token),
+              await userIdCookie.serialize(res?.results.id),
+              await userRoleCookie.serialize(res?.results.role),
+            ].join(", "),
+          },
+        }
+      );
+    } else {
+      return redirect(
+        `/login?message=${res?.message}&status=${res?.statusCode}`
+      );
+    }
+  } catch (error) {
+    return redirect(`/login?error=${error}`);
   }
 }
 
@@ -61,7 +66,7 @@ const Login = () => {
   const statusCode = searchParams.get("status");
   const error = searchParams.get("error");
   useEffect(() => {
-    if (error) {
+    if (error || statusCode === undefined) {
       setOpen(false);
     }
   }, [error]);

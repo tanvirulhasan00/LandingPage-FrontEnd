@@ -54,7 +54,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     console.log(res);
     if (res.success) {
       return redirect(
-        `/response?success=${res.success}&&status=${res.statusCode}&&message=${res.message}&&orderNumber=${res.results.orderNumber}&&paymentMethod=${paymentMethod}`
+        `/response?success=${res?.success}&&status=${res?.statusCode}&&message=${res?.message}&&orderNumber=${res?.results?.orderNumber}&&paymentMethod=${paymentMethod}`
       );
     }
   } catch (error) {
@@ -78,7 +78,7 @@ export default function Home() {
     <main>
       <div className="md:w-[90%] md:p-10 m-auto p-5 w-full">
         <Form method="post">
-          <input hidden name="productId" id="productId" value={product.id} />
+          <input hidden name="productId" id="productId" value={product?.id} />
           <div className="flex gap-10 border-none flex-col lg:flex-row border-gray-200 p-5  rounded-md shadow-2xl shadow-gray-500">
             <div id="contact-information" className="w-full">
               <ContactInformationForm

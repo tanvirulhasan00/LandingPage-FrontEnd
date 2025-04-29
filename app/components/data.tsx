@@ -1,47 +1,53 @@
 import axios from "axios";
 
+const baseUrl = "http://httpool-001-site1.anytempurl.com";
+const baseUrlLocal = "http://localhost:5274";
+const credentials = btoa(`${"11240566"}:${"60-dayfreetrial"}`); // base64 encode
+
 export const LoginReq = async (username: string, password: string) => {
   try {
     const { data } = await axios.post(
-      "http://localhost:5274/api/v1/auth/login",
+      `${baseUrl}/api/v1/auth/login`,
+      { userName: username, password: password },
       {
-        userName: username,
-        password: password,
         headers: {
           Accept: "text/plain",
           "Content-Type": "application/json",
         },
       }
     );
-    const user = data;
-    return user;
-  } catch (error) {
-    console.error("Error during login:", error);
-    // throw new Error("Login failed");
+    return data; // your user data
+  } catch (error: any) {
+    console.error("Login error:", error.response?.data || error.message);
+
+    return { success: false, message: "Invalid username or password" };
   }
 };
 export const Registration = async (
   formPayload: FormData,
   authToken: string
 ) => {
-  console.log("regis", formPayload);
-  const response = await axios.post(
-    `http://localhost:5274/api/v1/auth/registration`,
-    formPayload,
-    {
-      headers: {
-        Accept: "text/plain",
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${authToken}`, // Include token here
-      },
-    }
-  );
-  const data = await response.data;
-  return data;
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/api/v1/auth/registration`,
+      formPayload,
+      {
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${authToken}`, // Include token here
+        },
+      }
+    );
+    return data;
+  } catch (error: any) {
+    console.error("Registration error:", error.response?.data || error.message);
+    return { success: false, message: error?.message };
+  }
 };
 export const GetUser = async (id: string, authToken?: string) => {
   try {
-    const { data } = await axios.get(`http://localhost:5274/api/v1/user/get`, {
+    const { data } = await axios.get(`${baseUrl}/api/v1/user/get`, {
       params: { Id: id },
       headers: {
         Accept: "text/plain",
@@ -53,31 +59,34 @@ export const GetUser = async (id: string, authToken?: string) => {
     return res;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 export const DeactivateUser = async (
   formPayload: FormData,
   authToken: string
 ) => {
-  console.log("update", formPayload);
-  const response = await axios.post(
-    `http://localhost:5274/api/v1/user/update-status`,
-    formPayload,
-    {
-      headers: {
-        Accept: "text/plain",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`, // Include token here
-      },
-    }
-  );
-  const data = await response.data;
-  return data;
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/api/v1/user/update-status`,
+      formPayload,
+      {
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`, // Include token here
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
 export const GetProduct = async (id: number) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:5274/api/v1/product/get`,
+      `http://httpool-001-site1.anytempurl.com/api/v1/product/get`,
       {
         params: { Id: id },
         headers: {
@@ -86,10 +95,10 @@ export const GetProduct = async (id: number) => {
         },
       }
     );
-    const res = data;
-    return res;
+    return data;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 export const UpdateDeliveryStatus = async (
@@ -98,7 +107,7 @@ export const UpdateDeliveryStatus = async (
 ) => {
   try {
     const { data } = await axios.post(
-      `http://localhost:5274/api/v1/order/update-delivery-status`,
+      `${baseUrl}/api/v1/order/update-delivery-status`,
       formPayload,
       {
         headers: {
@@ -108,20 +117,19 @@ export const UpdateDeliveryStatus = async (
         },
       }
     );
-    const res = data;
-    return res;
+    return data;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 export const UpdatePaymentStatus = async (
   formPayload: FormData,
   authToken: string
 ) => {
-  console.log("u", formPayload, authToken);
   try {
     const { data } = await axios.post(
-      `http://localhost:5274/api/v1/order/update-payment-status`,
+      `${baseUrl}/api/v1/order/update-payment-status`,
       formPayload,
       {
         headers: {
@@ -131,10 +139,10 @@ export const UpdatePaymentStatus = async (
         },
       }
     );
-    const res = data;
-    return res;
+    return data;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 // GetAll
@@ -144,28 +152,26 @@ export const GetAll = async (
   user?: string
 ) => {
   try {
-    const { data } = await axios.get(
-      `http://localhost:5274/api/v1/${apiName}/getall`,
-      {
-        params: { user: user },
-        headers: {
-          Accept: "text/plain",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-      }
-    );
+    const { data } = await axios.get(`${baseUrl}/api/v1/${apiName}/getall`, {
+      params: { user: user },
+      headers: {
+        Accept: "text/plain",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
     const res = data;
     return res;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 // Get
 export const Get = async (id: number, authToken?: string, apiName?: string) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:5274/api/v1/${apiName}/get`,
+      `http://httpool-001-site1.anytempurl.com/api/v1/${apiName}/get`,
       {
         params: { Id: id },
         headers: {
@@ -179,6 +185,7 @@ export const Get = async (id: number, authToken?: string, apiName?: string) => {
     return res;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 export const Create = async (
@@ -186,110 +193,119 @@ export const Create = async (
   authToken?: string,
   endPoint?: string
 ) => {
-  console.log("create", formPayload);
-  const response = await axios.post(
-    `http://localhost:5274/api/v1/${endPoint}/create`,
-    formPayload,
-    {
-      headers: {
-        Accept: "text/plain",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`, // Include token here
-      },
-    }
-  );
-  const data = await response.data;
-  return data;
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/api/v1/${endPoint}/create`,
+      formPayload,
+      {
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`, // Include token here
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
 export const CreateMulti = async (
   formPayload: FormData,
   authToken: string,
   endPoint: string
 ) => {
-  console.log("create", formPayload);
-  const response = await axios.post(
-    `http://localhost:5274/api/v1/${endPoint}/create`,
-    formPayload,
-    {
-      headers: {
-        Accept: "text/plain",
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${authToken}`, // Include token here
-      },
-    }
-  );
-  const data = await response.data;
-  return data;
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/api/v1/${endPoint}/create`,
+      formPayload,
+      {
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${authToken}`, // Include token here
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
 export const Update = async (
   formPayload: FormData,
   authToken: string,
   endPoint: string
 ) => {
-  console.log("update", formPayload);
-  const response = await axios.post(
-    `http://localhost:5274/api/v1/${endPoint}/update`,
-    formPayload,
-    {
-      headers: {
-        Accept: "text/plain",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`, // Include token here
-      },
-    }
-  );
-  const data = await response.data;
-  return data;
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/api/v1/${endPoint}/update`,
+      formPayload,
+      {
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`, // Include token here
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
 export const UpdateMulti = async (
   formPayload: FormData,
   authToken: string,
   endPoint: string
 ) => {
-  console.log("upm", formPayload);
-  const response = await axios.post(
-    `http://localhost:5274/api/v1/${endPoint}/update`,
-    formPayload,
-    {
-      headers: {
-        Accept: "text/plain",
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${authToken}`, // Include token here
-      },
-    }
-  );
-  const data = await response.data;
-  return data;
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/api/v1/${endPoint}/update`,
+      formPayload,
+      {
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${authToken}`, // Include token here
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
 export const Delete = async (
   id: number,
   authToken: string,
   endPoint: string
 ) => {
-  console.log("top", id);
-  const response = await axios.delete(
-    `http://localhost:5274/api/v1/${endPoint}/delete`,
-    {
-      params: { Id: id }, // Pass query parameters here
-      headers: {
-        Accept: "text/plain", // Set header as in curl request
-        Authorization: `Bearer ${authToken}`, // Include token here
-      },
-    }
-  );
-  const data = await response.data;
-  return data;
+  try {
+    const { data } = await axios.delete(
+      `${baseUrl}/api/v1/${endPoint}/delete`,
+      {
+        params: { Id: id }, // Pass query parameters here
+        headers: {
+          Accept: "text/plain", // Set header as in curl request
+          Authorization: `Bearer ${authToken}`, // Include token here
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const GetBkashGrantToken = async () => {
   try {
-    const { data } = await axios.get(
-      `http://localhost:5274/api/v1/bkash/get-token`
-    );
+    const { data } = await axios.get(`${baseUrl}/api/v1/bkash/get-token`);
     const res = data;
     return res;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 export const CreateBkashPayment = async (formPayload: {
@@ -298,7 +314,7 @@ export const CreateBkashPayment = async (formPayload: {
 }) => {
   try {
     const { data } = await axios.post(
-      `http://localhost:5274/api/v1/bkash/create-payment`,
+      `${baseUrl}/api/v1/bkash/create-payment`,
       formPayload,
       {
         headers: {
@@ -309,6 +325,7 @@ export const CreateBkashPayment = async (formPayload: {
     return data;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };
 export const ExecuteBkashPayment = async (formPayload: {
@@ -317,7 +334,7 @@ export const ExecuteBkashPayment = async (formPayload: {
 }) => {
   try {
     const { data } = await axios.post(
-      `http://localhost:5274/api/v1/bkash/execute-payment`,
+      `${baseUrl}/api/v1/bkash/execute-payment`,
       formPayload,
       {
         headers: {
@@ -328,5 +345,6 @@ export const ExecuteBkashPayment = async (formPayload: {
     return data;
   } catch (error) {
     console.error("Error during getting data:", error);
+    return error;
   }
 };

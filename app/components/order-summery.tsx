@@ -66,14 +66,14 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
           <div className="flex gap-3">
             <div className="w-[6rem] h-[8rem] object-cover">
               <img
-                src={product.productImageUrl}
+                src={product?.productImageUrl}
                 className="w-full h-full rounded-md"
               />
             </div>
             <div className="flex flex-col justify-between">
               <div>
                 <h1 className="text-sm text-gray-800 dark:text-white">
-                  {product.name}
+                  {product?.name}
                 </h1>
                 <div className="flex flex-col gap-1 mt-1">
                   <select
@@ -104,7 +104,7 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
               </div>
               <div>
                 <h2 className="text-sm text-gray-900 dark:text-white">
-                  BDT {product.price}
+                  BDT {product?.price}
                 </h2>
               </div>
             </div>
