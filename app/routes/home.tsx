@@ -60,7 +60,6 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
 
   try {
     const res = await Create(formPayload, "", "order");
-    console.log(res);
     if (res.success) {
       return redirect(
         `/response?success=${res?.success}&&status=${res?.statusCode}&&message=${res?.message}&&orderNumber=${res?.results?.orderNumber}&&paymentMethod=${paymentMethod}`
