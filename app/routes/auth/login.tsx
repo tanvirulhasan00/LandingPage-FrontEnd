@@ -7,27 +7,21 @@ import {
 } from "react-router";
 import type { Route } from "./+types/login";
 import { LoginReq } from "~/components/data";
-import { authCookie, userIdCookie, userRoleCookie } from "~/cookies.server";
 import { useEffect, useState } from "react";
 import Notification from "~/components/notification";
+// import { authCookie, userIdCookie, userRoleCookie } from "~/cookies.server";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "Landing Page | Login" },
-    { name: "description", content: "Welcome to landign page login" },
-  ];
-}
-
-export async function loader({ request }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  // const cookieHeader = request.headers.get("Cookie");
+  // const token = (await authCookie.parse(cookieHeader)) || null;
+  const token = localStorage.getItem("authToken");
   if (token !== null) {
     return redirect("/dashboard");
   }
   return { token: token };
 }
 
-export async function action({ request }: Route.ActionArgs) {
+export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
   const username = formData.get("username") as string;
   const password = formData.get("password") as string;
@@ -35,17 +29,21 @@ export async function action({ request }: Route.ActionArgs) {
   const res = await LoginReq(username, password);
   try {
     if (res?.success) {
+      localStorage.setItem("authToken", res?.results.token);
+      localStorage.setItem("userId", res?.results.id);
+      localStorage.setItem("userRole", res?.results.role);
+
       return redirect(
-        `/dashboard?message=${res?.message}&status=${res?.statusCode}`,
-        {
-          headers: {
-            "Set-Cookie": [
-              await authCookie.serialize(res?.results.token),
-              await userIdCookie.serialize(res?.results.id),
-              await userRoleCookie.serialize(res?.results.role),
-            ].join(", "),
-          },
-        }
+        `/dashboard?message=${res?.message}&status=${res?.statusCode}`
+        // {
+        //   // headers: {
+        //   //   "Set-Cookie": [
+        //   //     await authCookie.serialize(ç),
+        //   //     await userIdCookie.serialize(res?.results.id),
+        //   //     await userRoleCookie.serialize(res?.results.role),
+        //   //   ].join(", "),
+        //   // },
+        // }
       );
     } else {
       return redirect(
@@ -55,6 +53,12 @@ export async function action({ request }: Route.ActionArgs) {
   } catch (error) {
     return redirect(`/login?error=${error}`);
   }
+}
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Landing Page | Login" },
+    { name: "description", content: "Welcome to landign page login" },
+  ];
 }
 
 const Login = () => {

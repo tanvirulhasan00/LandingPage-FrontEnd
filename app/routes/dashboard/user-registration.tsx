@@ -10,13 +10,11 @@ import Divider from "~/components/divider";
 import Input from "~/components/input";
 import Label from "~/components/label";
 import type { Route } from "./+types/update-userinfo";
-import { authCookie } from "~/cookies.server";
 import { Registration } from "~/components/data";
 import TextArea from "~/components/text-area";
 
-export const action = async ({ request }: Route.ActionArgs) => {
-  const cookiesHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookiesHeader)) || null;
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
+  const token = localStorage.getItem("authToken") as string;
   const formData = await request.formData();
   const formPayload = new FormData();
   formPayload.append("userName", formData.get("userName") as string);

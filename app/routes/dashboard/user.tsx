@@ -1,15 +1,20 @@
 import React from "react";
-import { Link, redirect, useLoaderData, useNavigate } from "react-router";
+import {
+  isRouteErrorResponse,
+  Link,
+  redirect,
+  useLoaderData,
+  useNavigate,
+} from "react-router";
 import Button from "~/components/button";
 import { GetAll } from "~/components/data";
 import Table from "~/components/table";
 import { columns } from "~/components/user-column";
-import { authCookie } from "~/cookies.server";
 import type { Route } from "./+types/user";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const cookiesHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookiesHeader)) || null;
+export const clientLoader = async () => {
+  const token = localStorage.getItem("authToken") as string;
+  console.log("token", token);
 
   try {
     const res = await GetAll(token, "user", "all");
@@ -20,7 +25,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 const User = () => {
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<typeof clientLoader>();
   const navigate = useNavigate();
   const handleUpdate = (id: number) => {
     navigate(`/dashboard/update-user-status/${id}`);
@@ -47,3 +52,27 @@ const User = () => {
 };
 
 export default User;
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  let message = "Oops!";
+  let details = "An unexpected error occurred.";
+  let stack: string | undefined;
+
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "404" : "Error";
+    details =
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
+  } else if (import.meta.env.DEV && error && error instanceof Error) {
+    details = error.message;
+    stack = error.stack;
+  }
+
+  return (
+    <main className="pt-16 p-4 container mx-auto">
+      <h1>{message}</h1>
+      <p>Something went wrong!</p>
+    </main>
+  );
+}

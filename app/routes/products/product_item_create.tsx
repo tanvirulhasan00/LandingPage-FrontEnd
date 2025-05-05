@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type { Route } from "./+types/product_item";
 import { CreateMulti } from "~/components/data";
-import { authCookie, userIdCookie } from "~/cookies.server";
 import {
   Form,
   isRouteErrorResponse,
@@ -15,13 +14,15 @@ import Label from "~/components/label";
 import Input from "~/components/input";
 import Button from "~/components/button";
 
-export async function loader({ request, params }: Route.LoaderArgs) {
-  const userIDH = request.headers.get("Cookie");
-  const userId = (await userIdCookie.parse(userIDH)) || null;
+export async function clientLoader({
+  request,
+  params,
+}: Route.ClientLoaderArgs) {
+  const userId = localStorage.getItem("userId") as string;
   return { userId: userId };
 }
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const formData = await request.formData();
   const imageUrl = formData.get("imageUrl");
   const userID = formData.get("userId") as string;
@@ -34,8 +35,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   formPayload.append("price", formData.get("price") as string);
   if (imageUrl instanceof File) formPayload.append("productImageUrl", imageUrl);
 
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
+  const token = localStorage.getItem("authToken") as string;
 
   try {
     const response = await CreateMulti(formPayload, token, "product");
@@ -55,7 +55,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 const ProductItem = () => {
-  const { userId } = useLoaderData<typeof loader>();
+  const { userId } = useLoaderData<typeof clientLoader>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const isLoading = navigation.state === "loading";

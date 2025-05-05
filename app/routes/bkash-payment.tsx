@@ -15,20 +15,20 @@ import {
   ExecuteBkashPayment,
   GetBkashGrantToken,
 } from "~/components/data";
-import { bkashToken } from "~/cookies.server";
-export const loader = async ({ request }: Route.LoaderArgs) => {
+
+export const clientLoader = async ({ request }: Route.ClientLoaderArgs) => {
   const url = new URL(request.url);
   const totalAmount = url.searchParams.get("total");
   return { totalAmount: totalAmount };
 };
-export const action = async ({ request }: Route.ActionArgs) => {
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const formData = await request.formData();
 
   const res = await GetBkashGrantToken();
   if (res?.statusMessage === "Successful") {
     console.log("bToken", res);
     // Create the Set-Cookie header
-    const cookie = await bkashToken.serialize(res.id_token);
+    localStorage.setItem("bkashToken", res.id_token);
     const formPayload = {
       amount: formData.get("total") as string,
       token: res.id_token, // <-- Insert your token here
@@ -39,11 +39,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       console.log("createBkash", createPay);
       // 👉 Redirect user to the bKash URL
 
-      return redirect(createPay.bkashURL, {
-        headers: {
-          "Set-Cookie": cookie, // Send the cookie to the browser
-        },
-      });
+      return redirect(createPay.bkashURL);
     }
   }
   // 📢 Now return the cookie in the response headers
@@ -51,7 +47,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 const BkashPayment = () => {
-  const { totalAmount } = useLoaderData<typeof loader>();
+  const { totalAmount } = useLoaderData<typeof clientLoader>();
 
   const amount = parseFloat(totalAmount || "");
   const formatted = new Intl.NumberFormat("en-BD", {

@@ -12,20 +12,20 @@ import {
 import Input from "~/components/input";
 import Label from "~/components/label";
 import Button from "~/components/button";
-import { authCookie } from "~/cookies.server";
 import { Get, UpdateDeliveryStatus } from "~/components/data";
 import type { Route } from "./+types/update_delivery_status";
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
+export const clientLoader = async ({
+  request,
+  params,
+}: Route.ClientLoaderArgs) => {
+  const token = localStorage.getItem("authToken") as string;
   const { orderId } = params;
   const res = await Get(Number(orderId), token, "order");
   return { orders: res.results };
 };
-export const action = async ({ request }: Route.ActionArgs) => {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
+  const token = localStorage.getItem("authToken") as string;
   const formData = await request.formData();
   const orderId = formData.get("orderId") as string;
   const formPayload = new FormData();
@@ -46,7 +46,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 const UpdateOrderStatus = () => {
-  const { orders } = useLoaderData<typeof loader>();
+  const { orders } = useLoaderData<typeof clientLoader>();
   console.log("d", orders);
   const navigation = useNavigation();
   const isLoading = navigation.state === "submitting";

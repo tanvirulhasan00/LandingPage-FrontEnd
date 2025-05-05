@@ -11,29 +11,26 @@ import Divider from "~/components/divider";
 import Input from "~/components/input";
 import Label from "~/components/label";
 import type { Route } from "./+types/update-userinfo";
-import { authCookie, userIdCookie } from "~/cookies.server";
-import { Get, UpdateMulti } from "~/components/data";
+import { Get, GetUser, UpdateMulti } from "~/components/data";
 import TextArea from "~/components/text-area";
 import { useEffect, useState } from "react";
 import Notification from "~/components/notification";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const cookiesHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookiesHeader)) || null;
-  const userIDH = request.headers.get("Cookie");
-  const userId = (await userIdCookie.parse(userIDH)) || null;
+export const clientLoader = async () => {
+  const token = localStorage.getItem("authToken") as string;
+  const userId = localStorage.getItem("userId") as string;
 
   try {
-    const res = await Get(userId, token, "user");
+    const res = await GetUser(userId, token);
     return { user: res?.results };
   } catch (error) {
     return redirect(`/dashboard?error=${error}`);
   }
 };
 
-export const action = async ({ request }: Route.ActionArgs) => {
-  const cookiesHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookiesHeader)) || null;
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
+  const token = localStorage.getItem("authToken") as string;
+
   const formData = await request.formData();
   const formPayload = new FormData();
   formPayload.append("id", formData.get("userId") as string);
@@ -59,7 +56,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 const UpdateUserInfo = () => {
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<typeof clientLoader>();
 
   const navigation = useNavigation();
   const isLoading = navigation.state === "submitting";

@@ -8,15 +8,11 @@ import { columns } from "~/components/order-column";
 import Table from "~/components/table";
 import type { Route } from "./+types/order";
 import { GetAll } from "~/components/data";
-import { authCookie, userIdCookie, userRoleCookie } from "~/cookies.server";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
-  const userIDH = request.headers.get("Cookie");
-  const userRoleHe = request.headers.get("Cookie");
-  const userRole = (await userRoleCookie.parse(userRoleHe)) || null;
-  const userId = (await userIdCookie.parse(userIDH)) || null;
+export const clientLoader = async ({ request }: Route.ClientLoaderArgs) => {
+  const token = localStorage.getItem("authToken") as string;
+  const userId = localStorage.getItem("userId") as string;
+  const userRole = localStorage.getItem("userRole") as string;
   const res = await GetAll(token, "order", userRole == "user" ? userId : "all");
 
   const order = res?.results;
@@ -25,7 +21,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 const OrderCom = () => {
-  const { order } = useLoaderData<typeof loader>();
+  const { order } = useLoaderData<typeof clientLoader>();
   console.log("w", order);
   const navigate = useNavigate();
   const fetcher = useFetcher();

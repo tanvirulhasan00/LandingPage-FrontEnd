@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { authCookie } from "~/cookies.server";
 import type { Route } from "./+types/update-user-status";
 import {
   Form,
@@ -9,16 +8,17 @@ import {
   useNavigation,
   useSearchParams,
 } from "react-router";
-import { DeactivateUser, GetUser, Update } from "~/components/data";
+import { DeactivateUser, GetUser } from "~/components/data";
 import Button from "~/components/button";
-import Divider from "~/components/divider";
 import Input from "~/components/input";
 import Label from "~/components/label";
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
+export const clientLoader = async ({
+  request,
+  params,
+}: Route.ClientLoaderArgs) => {
   const { userId } = params;
-  const cookiesHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookiesHeader)) || null;
+  const token = localStorage.getItem("authToken") as string;
 
   try {
     const res = await GetUser(userId, token);
@@ -28,9 +28,8 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   }
 };
 
-export const action = async ({ request }: Route.ActionArgs) => {
-  const cookiesHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookiesHeader)) || null;
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
+  const token = localStorage.getItem("authToken") as string;
   const formData = await request.formData();
   const formPayload = new FormData();
   const userId = formData.get("userId") as string;
@@ -52,7 +51,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 const UpdateUserStatus = () => {
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<typeof clientLoader>();
 
   const navigation = useNavigation();
   const isLoading = navigation.state === "submitting";

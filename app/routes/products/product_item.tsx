@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type { Route } from "./+types/product_item";
 import { CreateMulti, Get, UpdateMulti } from "~/components/data";
-import { authCookie, userIdCookie } from "~/cookies.server";
 import {
   Form,
   isRouteErrorResponse,
@@ -15,11 +14,12 @@ import Label from "~/components/label";
 import Input from "~/components/input";
 import Button from "~/components/button";
 
-export async function loader({ request, params }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const userIDH = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
-  const userId = (await userIdCookie.parse(userIDH)) || null;
+export async function clientLoader({
+  request,
+  params,
+}: Route.ClientLoaderArgs) {
+  const token = localStorage.getItem("authToken") as string;
+  const userId = localStorage.getItem("userId") as string;
 
   const { productId } = params;
   try {
@@ -30,7 +30,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   }
 }
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const formData = await request.formData();
   const ProductId = formData.get("id") as string;
   const userID = formData.get("userId") as string;
@@ -45,8 +45,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   formPayload.append("price", formData.get("price") as string);
   if (imageUrl instanceof File) formPayload.append("productImageUrl", imageUrl);
 
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
+  const token = localStorage.getItem("authToken") as string;
 
   try {
     const response = await UpdateMulti(formPayload, token, "product");
@@ -68,7 +67,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 const ProductItem = () => {
-  const { product, userId } = useLoaderData<typeof loader>();
+  const { product, userId } = useLoaderData<typeof clientLoader>();
   const navigation = useNavigation();
   const isLoading = navigation.state === "submitting";
   const [formData, setFormData] = useState({

@@ -1,27 +1,23 @@
 import { isRouteErrorResponse, Link, useLoaderData } from "react-router";
-import { authCookie, userIdCookie, userRoleCookie } from "~/cookies.server";
-import { Get } from "~/components/data";
+import { GetUser } from "~/components/data";
 import type { Route } from "./+types/dashboard";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import Button from "~/components/button";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
-  const userIDH = request.headers.get("Cookie");
-  const userId = (await userIdCookie.parse(userIDH)) || null;
+export async function clientLoader() {
+  const token = localStorage.getItem("authToken") as string;
+  const userId = localStorage.getItem("userId") as string;
+  const userRole = localStorage.getItem("userRole") as string;
 
-  const userRoleHe = request.headers.get("Cookie");
-  const userRole = (await userRoleCookie.parse(userRoleHe)) || null;
-
-  const res = await Get(userId, token, "user");
+  const res = await GetUser(userId, token);
+  console.log("user", res);
   const users = res?.results;
   return { user: users, userRole: userRole };
 }
 
 const Index = () => {
-  const { user, userRole } = useLoaderData<typeof loader>();
-  console.log("user", user);
+  const { user, userRole } = useLoaderData<typeof clientLoader>();
+
   return (
     <div className="min-h-screen bg-gradient-to-tr from-indigo-100 dark:from-black to-white dark:to-gray-800 flex items-center justify-center p-6">
       <div className="w-full max-w-5xl bg-white dark:bg-gray-600 text-gray-800 dark:text-white rounded-3xl shadow-2xl overflow-hidden">

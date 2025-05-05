@@ -2,11 +2,9 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { isRouteErrorResponse, Link, useLoaderData } from "react-router";
 import type { Route } from "./+types/payment-success";
 import { ExecuteBkashPayment } from "~/components/data";
-import { bkashToken } from "~/cookies.server";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await bkashToken.parse(cookieHeader)) || null;
+export const clientLoader = async ({ request }: Route.ClientLoaderArgs) => {
+  const token = localStorage.getItem("bkashToken") as string;
   const url = new URL(request.url);
   const paymentID = url.searchParams.get("paymentID") as string;
   const status = url.searchParams.get("status");
@@ -23,7 +21,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 export default function PaymentSuccess() {
-  const { paymentID, status, signature } = useLoaderData<typeof loader>();
+  const { paymentID, status, signature } = useLoaderData<typeof clientLoader>();
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 max-w-lg w-full text-center">

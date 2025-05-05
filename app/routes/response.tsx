@@ -9,7 +9,7 @@ import type { Route } from "./+types/response";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import Button from "~/components/button";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const clientLoader = async ({ request }: Route.ClientLoaderArgs) => {
   const url = new URL(request.url);
   const success = url.searchParams.get("success");
   const message = url.searchParams.get("message");
@@ -29,7 +29,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 const Success = () => {
   const { success, status, message, orderNumber, paymentMethod, error } =
-    useLoaderData<typeof loader>();
+    useLoaderData<typeof clientLoader>();
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">

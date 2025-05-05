@@ -8,7 +8,6 @@ import {
   useLoaderData,
 } from "react-router";
 import type { Route } from "./+types/dashboard";
-import { authCookie, userIdCookie, userRoleCookie } from "~/cookies.server";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -17,11 +16,9 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const cookieUserRole = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
-  const userRole = (await userRoleCookie.parse(cookieUserRole)) || null;
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  const token = localStorage.getItem("authToken") as string;
+  const userRole = localStorage.getItem("userRole") as string;
 
   if (!token) {
     return redirect("/login");
@@ -29,20 +26,15 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { token: token, userRole: userRole };
 }
 
-export const action = async () => {
-  return redirect("/login?message=Logged+out", {
-    headers: {
-      "Set-Cookie": [
-        await authCookie.serialize("", { maxAge: 0 }),
-        await userIdCookie.serialize("", { maxAge: 0 }),
-        await userRoleCookie.serialize("", { maxAge: 0 }),
-      ].join(", "),
-    },
-  });
+export const clientAction = async () => {
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("userRole");
+  return redirect("/login");
 };
 
 const Dashboard = () => {
-  const { token, userRole } = useLoaderData<typeof loader>();
+  const { token, userRole } = useLoaderData<typeof clientLoader>();
   const fetcher = useFetcher();
   const handleLogout = () => {
     fetcher.submit(null, { method: "post" });

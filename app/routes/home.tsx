@@ -3,12 +3,14 @@ import {
   isRouteErrorResponse,
   redirect,
   useLoaderData,
+  useNavigation,
 } from "react-router";
 import type { Route } from "./+types/home";
 import ContactInformationForm from "~/components/contact-information";
 import OrderSummery from "~/components/order-summery";
-import { useState } from "react";
-import { Create, Get, GetBkashGrantToken, GetProduct } from "~/components/data";
+import { useEffect, useState } from "react";
+import { Create, Get, GetProduct } from "~/components/data";
+import Loading from "~/components/loading";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -17,13 +19,20 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
+export const clientLoader = async ({
+  request,
+  params,
+}: Route.ClientLoaderArgs) => {
   const { productId } = params;
   const res = await GetProduct(Number(productId));
   const shippingFeesData = await Get(1, "", "all-cost");
-  return { product: res.results, shippingFeesData: shippingFeesData.results };
+  return {
+    success: res.success,
+    product: res.results,
+    shippingFeesData: shippingFeesData.results,
+  };
 };
-export const action = async ({ request }: Route.ActionArgs) => {
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const formData = await request.formData();
   const paymentMethod = formData.get("payment-method") as string;
   const totalAmount = formData.get("total") as string;
@@ -70,9 +79,22 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 export default function Home() {
-  const { product, shippingFeesData } = useLoaderData<typeof loader>();
+  const { product, shippingFeesData, success } =
+    useLoaderData<typeof clientLoader>();
   const [selectedOption, setSelectedOption] = useState<string>("");
   const handleDelete = () => {};
+
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
+  console.log("Navigation state:", success);
+
+  const [showLoader, setShowLoader] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setShowLoader(false), 2000); // Delay for UX
+    return () => clearTimeout(timeout);
+  }, [showLoader]);
 
   return (
     <main>
@@ -87,12 +109,16 @@ export default function Home() {
               />
             </div>
             <div id="order-summary" className="w-full">
-              <OrderSummery
-                product={product}
-                shippingFeesData={shippingFeesData}
-                handleDelete={handleDelete}
-                selectedOption={selectedOption}
-              />
+              {showLoader ? (
+                <Loading />
+              ) : (
+                <OrderSummery
+                  product={product}
+                  shippingFeesData={shippingFeesData}
+                  handleDelete={handleDelete}
+                  selectedOption={selectedOption}
+                />
+              )}
             </div>
           </div>
         </Form>

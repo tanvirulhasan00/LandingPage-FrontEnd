@@ -1,7 +1,6 @@
 import Button from "~/components/button";
 import { columns } from "~/components/product-column";
 import Table from "~/components/table";
-import { authCookie, userIdCookie, userRoleCookie } from "~/cookies.server";
 import { Delete, GetAll } from "~/components/data";
 import {
   isRouteErrorResponse,
@@ -17,14 +16,10 @@ import type { Route } from "./+types/product";
 import Loading from "~/components/loading";
 import { useEffect } from "react";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
-  const userIDH = request.headers.get("Cookie");
-  const userRoleHe = request.headers.get("Cookie");
-
-  const userRole = (await userRoleCookie.parse(userRoleHe)) || null;
-  const userId = (await userIdCookie.parse(userIDH)) || null;
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  const token = localStorage.getItem("authToken") as string;
+  const userId = localStorage.getItem("userId") as string;
+  const userRole = localStorage.getItem("userRole") as string;
 
   const res = await GetAll(
     token,
@@ -35,9 +30,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { product: product };
 }
 
-export async function action({ request }: Route.ActionArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = (await authCookie.parse(cookieHeader)) || null;
+export async function clientAction({ request }: Route.ClientActionArgs) {
+  const token = localStorage.getItem("authToken") as string;
   const formData = await request.formData();
   const id = formData.get("productId");
 
@@ -54,7 +48,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 const Product = () => {
-  const { product } = useLoaderData<typeof loader>();
+  const { product } = useLoaderData<typeof clientLoader>();
   const navigate = useNavigate();
   const fetcher = useFetcher();
   const navigation = useNavigation();
