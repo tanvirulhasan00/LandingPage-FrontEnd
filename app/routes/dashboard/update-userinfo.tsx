@@ -22,6 +22,7 @@ export const clientLoader = async () => {
 
   try {
     const res = await GetUser(userId, token);
+    console.log("");
     return { user: res?.results };
   } catch (error) {
     return redirect(`/dashboard?error=${error}`);
