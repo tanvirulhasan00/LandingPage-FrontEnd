@@ -16,12 +16,15 @@ const rows = [
 
 const Payment = () => {
   return (
-    <div className="p-10">
-      <div className="mb-5 text-2xl p-1">
-        <h1>Payment List</h1>
-      </div>
-      <Table columns={columns} rows={rows} show="payment" />
+    <div className="flex items-center justify-center mt-5 text-red-500">
+      This is a advance feature. contact for more.
     </div>
+    // <div className="p-10">
+    //   <div className="mb-5 text-2xl p-1">
+    //     <h1>Payment List</h1>
+    //   </div>
+    //   <Table columns={columns} rows={rows} show="payment" />
+    // </div>
   );
 };
 

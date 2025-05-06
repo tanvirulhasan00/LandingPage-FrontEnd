@@ -1,19 +1,10 @@
-import {
-  Form,
-  Link,
-  redirect,
-  useNavigation,
-  useSearchParams,
-} from "react-router";
+import { Form, redirect, useNavigation, useSearchParams } from "react-router";
 import type { Route } from "./+types/login";
 import { LoginReq } from "~/components/data";
 import { useEffect, useState } from "react";
 import Notification from "~/components/notification";
-// import { authCookie, userIdCookie, userRoleCookie } from "~/cookies.server";
 
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-  // const cookieHeader = request.headers.get("Cookie");
-  // const token = (await authCookie.parse(cookieHeader)) || null;
+export async function clientLoader() {
   const token = localStorage.getItem("authToken");
   if (token !== null) {
     return redirect("/dashboard");
@@ -29,21 +20,17 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
   const res = await LoginReq(username, password);
   try {
     if (res?.success) {
-      localStorage.setItem("authToken", res?.results.token);
-      localStorage.setItem("userId", res?.results.id);
-      localStorage.setItem("userRole", res?.results.role);
+      const userToken = res?.results.token;
+      const userId = res?.results.id;
+      const userRole = res?.results.role;
+      // const expiresAt = Date.now() + 1000 * 60 * 60 * 24; // 24 hours from now
+
+      localStorage.setItem("authToken", userToken);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("userRole", userRole);
 
       return redirect(
         `/dashboard?message=${res?.message}&status=${res?.statusCode}`
-        // {
-        //   // headers: {
-        //   //   "Set-Cookie": [
-        //   //     await authCookie.serialize(ç),
-        //   //     await userIdCookie.serialize(res?.results.id),
-        //   //     await userRoleCookie.serialize(res?.results.role),
-        //   //   ].join(", "),
-        //   // },
-        // }
       );
     } else {
       return redirect(

@@ -55,7 +55,7 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
   }, [selectedOption, number]);
 
   return (
-    <div className="w-full">
+    <div id="order" className="w-full">
       <input id={"total"} name="total" hidden value={total} />
       <input id={"number"} name="number" hidden value={number} />
       <div className="tracking-[2px] text-xl  text-gray-900 dark:text-white mb-5">
@@ -72,16 +72,16 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
             </div>
             <div className="flex flex-col justify-between">
               <div>
-                <h1 className="text-sm text-gray-800 dark:text-white">
+                <h1 className="text-lg text-gray-800 dark:text-white">
                   {product?.name}
                 </h1>
-                <div className="flex flex-col gap-1 mt-1">
+                <div className="flex flex-col gap-1 mt-2">
                   <select
                     name="color"
                     id="color"
-                    className="text-[.8rem] text-gray-400"
+                    className="text-[1rem] text-gray-400"
                   >
-                    <option selected>Color</option>
+                    {/* <option selected>Color</option> */}
                     {colors.map((color: string, index: number) => (
                       <option key={index} value={color}>
                         {color.length ? color : "n/a"}
@@ -91,9 +91,9 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
                   <select
                     name="size"
                     id="size"
-                    className="text-[.8rem] text-gray-400"
+                    className="text-[1rem] text-gray-400 mt-1"
                   >
-                    <option selected>Size</option>
+                    {/* <option selected>Size</option> */}
                     {sizes.map((size: string, index: number) => (
                       <option key={index} value={size}>
                         {size.length ? size : "n/a"}

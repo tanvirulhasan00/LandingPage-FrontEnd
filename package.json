@@ -2,14 +2,11 @@
   "name": "landing-page",
   "private": true,
   "type": "module",
-  "homepage": "https://tanvirulhasan00.github.io/landing_page_frontend",
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.2",

@@ -42,12 +42,8 @@ export const columns = [
     },
   },
   {
-    key: "firstName",
+    key: "fullName",
     label: "Customer Name",
-  },
-  {
-    key: "comment",
-    label: "Customer Comment",
   },
   {
     key: "phoneNumber",
@@ -91,7 +87,29 @@ export const columns = [
     label: "Payment Method",
   },
   {
+    key: "paymentAccountNumber",
+    label: "Account Number",
+  },
+  {
+    key: "transactionId",
+    label: "Transaction Id",
+  },
+  {
     key: "paymentStatus",
     label: "Payment Status",
+    render: (val: string) => {
+      return (
+        <span
+          className={`font-semibold ${
+            {
+              Paid: "text-green-500",
+              Pending: "text-red-500",
+            }[val] || ""
+          }`}
+        >
+          {val}
+        </span>
+      );
+    },
   },
 ];

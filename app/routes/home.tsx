@@ -11,6 +11,9 @@ import OrderSummery from "~/components/order-summery";
 import { useEffect, useState } from "react";
 import { Create, Get, GetProduct } from "~/components/data";
 import Loading from "~/components/loading";
+import CardWithSlider from "~/components/image-slider";
+import AdCard from "~/components/ad-card";
+import TimerCard from "~/components/timer";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -24,30 +27,39 @@ export const clientLoader = async ({
   params,
 }: Route.ClientLoaderArgs) => {
   const { productId } = params;
-  const res = await GetProduct(Number(productId));
-  const shippingFeesData = await Get(1, "", "all-cost");
-  return {
-    success: res.success,
-    product: res.results,
-    shippingFeesData: shippingFeesData.results,
-  };
+  try {
+    const res = await GetProduct(Number(productId));
+    const shippingFeesData = await Get(1, "", "all-cost");
+    return {
+      success: res.success,
+      product: res.results,
+      shippingFeesData: shippingFeesData.results,
+    };
+  } catch (error) {
+    return { error };
+  }
 };
 export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const formData = await request.formData();
   const paymentMethod = formData.get("payment-method") as string;
   const totalAmount = formData.get("total") as string;
 
+  console.log("tra", formData.get("transactionId") as string);
+  console.log("acount", formData.get("paymentAccountNumber") as string);
+
   const formPayload = new FormData();
   formPayload.append("productId", formData.get("productId") as string);
   formPayload.append("email", formData.get("email") as string);
-  formPayload.append("firstname", formData.get("firstname") as string);
-  formPayload.append("lastname", formData.get("lastname") as string);
-  formPayload.append("district", formData.get("district") as string);
-  formPayload.append("subDistrict", formData.get("subDistrict") as string);
+  formPayload.append("fullname", formData.get("fullname") as string);
+  formPayload.append("transactionId", formData.get("transactionId") as string);
+  formPayload.append(
+    "paymentAccountNumber",
+    formData.get("paymentAccountNumber") as string
+  );
+
   formPayload.append("address", formData.get("address") as string);
   formPayload.append("phoneNumber", formData.get("phoneNumber") as string);
   formPayload.append("quantity", formData.get("number") as string);
-  formPayload.append("comment", formData.get("comments") as string);
   formPayload.append("productColor", formData.get("color") as string);
   formPayload.append("productSize", formData.get("size") as string);
 
@@ -81,47 +93,70 @@ export default function Home() {
   const { product, shippingFeesData, success } =
     useLoaderData<typeof clientLoader>();
   const [selectedOption, setSelectedOption] = useState<string>("");
-  const handleDelete = () => {};
-
   const navigation = useNavigation();
-  const isLoading = navigation.state === "loading";
-
-  console.log("Navigation state:", success);
-
-  const [showLoader, setShowLoader] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setShowLoader(false), 2000); // Delay for UX
+    const timeout = setTimeout(() => {
+      setInitialLoading(false);
+    }, 400); // smoother transition
+
     return () => clearTimeout(timeout);
-  }, [showLoader]);
+  }, []);
+
+  const isNavigating = navigation.state === "loading";
+  const showLoader = isNavigating || initialLoading;
+  const handleDelete = () => {};
 
   return (
     <main>
-      <div className="md:w-[90%] md:p-10 m-auto p-5 w-full">
-        <Form method="post">
-          <input hidden name="productId" id="productId" value={product?.id} />
-          <div className="flex gap-10 border-none flex-col lg:flex-row border-gray-200 p-5  rounded-md shadow-2xl shadow-gray-500">
-            <div id="contact-information" className="w-full">
-              <ContactInformationForm
-                selectedOption={selectedOption}
-                onOptionChange={setSelectedOption}
-              />
-            </div>
-            <div id="order-summary" className="w-full">
-              {showLoader ? (
-                <Loading />
-              ) : (
+      {showLoader ? (
+        <Loading />
+      ) : (
+        <div className="md:w-[90%] md:p-10 m-auto p-5 w-full">
+          {/* customer logo */}
+          <div className="mb-3 flex gap-10 border-none  border-gray-200 p-5  rounded-md shadow-sm shadow-gray-500 items-center">
+            <img src="/favicon.ico" />
+            <h1>Company Name</h1>
+          </div>
+          <div className="hidden max-lg:block">
+            {/* <TimerCard /> */}
+            <AdCard />
+            <AdCard />
+            <CardWithSlider />
+          </div>
+          <Form method="post">
+            <input hidden name="productId" id="productId" value={product?.id} />
+            <div className="flex gap-10 border-none flex-col lg:flex-row border-gray-200 p-5  rounded-md shadow-2xl shadow-gray-500">
+              <div id="contact-information" className="w-full">
+                <ContactInformationForm
+                  selectedOption={selectedOption}
+                  onOptionChange={setSelectedOption}
+                />
+              </div>
+              <div id="order-summary" className="w-full">
+                <div className="hidden lg:block mb-3">
+                  {/* <TimerCard /> */}
+                  <AdCard />
+                  <AdCard />
+                  <CardWithSlider />
+                </div>
                 <OrderSummery
                   product={product}
                   shippingFeesData={shippingFeesData}
                   handleDelete={handleDelete}
                   selectedOption={selectedOption}
                 />
-              )}
+              </div>
             </div>
+          </Form>
+          {/* footer */}
+          <div className="flex gap-10 border-none  border-gray-200 p-5  rounded-md items-center">
+            <img src="/favicon.ico" />
+            <h1>Copyright &copy; 2025 Cookies Software Ltd. Inc.</h1>
           </div>
-        </Form>
-      </div>
+        </div>
+      )}
     </main>
   );
 }
