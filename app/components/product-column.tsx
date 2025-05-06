@@ -8,6 +8,11 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 
 export const columns = [
   {
+    key: "id",
+    label: "Product Id",
+    render: (val: string) => <span className="font-semibold">{val}</span>,
+  },
+  {
     key: "productImageUrl",
     label: "Image",
     render: (val: string) => (

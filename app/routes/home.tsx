@@ -43,10 +43,6 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const formData = await request.formData();
   const paymentMethod = formData.get("payment-method") as string;
   const totalAmount = formData.get("total") as string;
-
-  console.log("tra", formData.get("transactionId") as string);
-  console.log("acount", formData.get("paymentAccountNumber") as string);
-
   const formPayload = new FormData();
   formPayload.append("productId", formData.get("productId") as string);
   formPayload.append("email", formData.get("email") as string);

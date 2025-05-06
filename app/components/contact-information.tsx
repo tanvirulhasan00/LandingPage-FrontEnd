@@ -14,11 +14,31 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
   const [paymentMethod, setPaymentMethod] = useState("bkash");
   const [deliveryMethod, setDeliveryMethod] = useState("home");
   const [deliveryLocation, setDeliveryLocation] = useState("");
-  const handleChange = (e: any) => {
-    onOptionChange(e.target.value),
-      setDeliveryMethod("pickup"),
-      setDeliveryLocation("");
+
+  const [paymentAccountNumber, setPaymentAccountNumber] = useState("");
+  const [paymentAccountNumberError, setPaymentAccountNumberError] =
+    useState("");
+
+  const handlePaymentNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    if (value.length <= 11) {
+      setPaymentAccountNumber(value);
+    }
+
+    if (value.length < 11) {
+      setPaymentAccountNumberError("Payment number must be 11 digits.");
+    } else {
+      setPaymentAccountNumberError("");
+    }
   };
+
+  // const handleChange = (e: any) => {
+  //   onOptionChange(e.target.value),
+  //     setDeliveryMethod("pickup"),
+  //     setDeliveryLocation("");
+  // };
   return (
     <div id="contact" className="w-full">
       {/* Contact information */}
@@ -218,10 +238,17 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                             type="text"
                             id="paymentAccountNumber"
                             name="paymentAccountNumber"
+                            value={paymentAccountNumber}
+                            onChange={handlePaymentNumberChange}
                             className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                             placeholder="01XXXXXXXXX"
                             required
                           />
+                          {paymentAccountNumberError && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {paymentAccountNumberError}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="mt-2">
@@ -283,10 +310,17 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                             type="text"
                             id="paymentAccountNumber"
                             name="paymentAccountNumber"
+                            value={paymentAccountNumber}
+                            onChange={handlePaymentNumberChange}
                             className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                             placeholder="01XXXXXXXXX"
                             required
                           />
+                          {paymentAccountNumberError && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {paymentAccountNumberError}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="mt-2">
