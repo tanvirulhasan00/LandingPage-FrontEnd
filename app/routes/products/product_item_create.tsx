@@ -84,11 +84,11 @@ const ProductItem = () => {
           </div>
           <div className="mt-5">
             <Label>Product Color</Label>
-            <Input type="text" name="color" />
+            <Input type="text" name="color" placeholder="white,red,black" />
           </div>
           <div className="mt-5">
             <Label>Product Size</Label>
-            <Input type="text" name="size" />
+            <Input type="text" name="size" placeholder="sm,md,lg" />
           </div>
           <div className="mt-5">
             <Label>Product Price</Label>

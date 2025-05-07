@@ -117,6 +117,7 @@ const ProductItem = () => {
               name="color"
               value={formData.color}
               onChange={handleChange}
+              placeholder="white,red,black"
             />
           </div>
           <div className="mt-5">
@@ -126,6 +127,7 @@ const ProductItem = () => {
               name="size"
               value={formData.size}
               onChange={handleChange}
+              placeholder="sm,md,lg"
             />
           </div>
           <div className="mt-5">
