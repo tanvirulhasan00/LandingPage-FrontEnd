@@ -208,9 +208,9 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                     onChange={() => setPaymentMethod("bkash")}
                   />
                   {paymentMethod === "bkash" && (
-                    <div className="relative mt-4 max-w-md bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-4 py-3 rounded-lg">
+                    <div className="relative mt-4 max-w-md bg-[#c03141] text-white px-4 py-3 rounded-lg">
                       {/* Arrow */}
-                      <div className="absolute top-0 left-3 -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-purple-100 dark:border-b-purple-900" />
+                      <div className="absolute top-0 left-3 -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[#c03141]" />
 
                       <div>
                         <div>
@@ -221,7 +221,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                             <br /> Pay your total bill to our bkash number
                             "01900112233".
                           </p>
-                          <p className="text-red-500">
+                          <p className="text-black">
                             Note: Bills can be paid through the "Send Money" or
                             "Payment" option.
                           </p>
@@ -230,7 +230,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                         <div className="mt-2">
                           <label
                             htmlFor="paymentAccountNumber"
-                            className="block text-md font-medium text-purple-800 dark:text-purple-200"
+                            className="block text-md font-medium text-white "
                           >
                             Enter your Bkash number:
                           </label>
@@ -240,12 +240,12 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                             name="paymentAccountNumber"
                             value={paymentAccountNumber}
                             onChange={handlePaymentNumberChange}
-                            className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                            className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-[#d0efff] focus:ring-[#d0efff] sm:text-sm focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-[#d0efff]"
                             placeholder="01XXXXXXXXX"
                             required
                           />
                           {paymentAccountNumberError && (
-                            <p className="mt-1 text-sm text-red-600">
+                            <p className="mt-1 text-sm text-red-500">
                               {paymentAccountNumberError}
                             </p>
                           )}
@@ -255,7 +255,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                         {/* Input */}
                         <label
                           htmlFor="transactionId"
-                          className="block text-md font-medium text-purple-800 dark:text-purple-200"
+                          className="block text-md font-medium text-white"
                         >
                           Enter your Bkash Transaction ID:
                         </label>
@@ -263,7 +263,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                           type="text"
                           id="transactionId"
                           name="transactionId"
-                          className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                          className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-[#d0efff] focus:ring-[#d0efff] sm:text-sm focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-[#d0efff]"
                           placeholder="TM0W200"
                           required
                         />
@@ -280,20 +280,20 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                     onChange={() => setPaymentMethod("nagad")}
                   />
                   {paymentMethod === "nagad" && (
-                    <div className="relative mt-4 max-w-md bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-4 py-3 rounded-lg">
+                    <div className="relative mt-4 max-w-md bg-[#c03141] text-white px-4 py-3 rounded-lg">
                       {/* Arrow */}
-                      <div className="absolute top-0 left-3 -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-purple-100 dark:border-b-purple-900" />
+                      <div className="absolute top-0 left-3 -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[#c03141]" />
 
                       <div>
                         <div>
                           <p>
-                            To pay money to nagad, select the "Send Money"
+                            To pay money from Nagad, select the "Send Money"
                             option through the nagad app or directly by dialing
                             *247#.
                             <br /> Pay your total bill to our nagad number
                             "01900112233".
                           </p>
-                          <p className="text-red-500">
+                          <p className="text-black">
                             Note: Bills can be paid through the "Send Money" or
                             "Payment" option.
                           </p>
@@ -302,7 +302,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                         <div className="mt-2">
                           <label
                             htmlFor="paymentAccountNumber"
-                            className="block text-md font-medium text-purple-800 dark:text-purple-200"
+                            className="block text-md font-medium text-white "
                           >
                             Enter your nagad number:
                           </label>
@@ -312,7 +312,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                             name="paymentAccountNumber"
                             value={paymentAccountNumber}
                             onChange={handlePaymentNumberChange}
-                            className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                            className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-[#d0efff] focus:ring-[#d0efff] sm:text-sm focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-[#d0efff]"
                             placeholder="01XXXXXXXXX"
                             required
                           />
@@ -327,7 +327,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                         {/* Input */}
                         <label
                           htmlFor="transactionId"
-                          className="block text-md font-medium text-purple-800 dark:text-purple-200"
+                          className="block text-md font-medium text-white "
                         >
                           Enter your nagad Transaction ID:
                         </label>
@@ -335,7 +335,7 @@ const ContactInformationForm = ({ selectedOption, onOptionChange }: Props) => {
                           type="text"
                           id="transactionId"
                           name="transactionId"
-                          className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                          className="mt-1 block w-full rounded-md p-2 border-1 border-gray-300 shadow-sm focus:border-[#d0efff] focus:ring-[#d0efff] sm:text-sm focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-[#d0efff]"
                           placeholder="N2M0W20"
                           required
                         />

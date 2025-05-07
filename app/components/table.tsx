@@ -13,10 +13,12 @@ interface EnhancedTableProps {
   onRowClick?: (row: any) => void;
   rowsPerPage?: number;
   handleUpdate?: (item: number) => void;
+  handlePaymentStatusUpdate?: (item: number) => void;
   handleDelete?: (item: number) => void;
   show: string;
   updateBtnText?: string;
   hideDeleteBtn?: boolean;
+  showSecondUBtn?: boolean;
   bg?: string;
 }
 
@@ -26,10 +28,12 @@ const Table: React.FC<EnhancedTableProps> = ({
   onRowClick,
   rowsPerPage = 5,
   handleUpdate,
+  handlePaymentStatusUpdate,
   handleDelete,
   show,
   updateBtnText,
   hideDeleteBtn,
+  showSecondUBtn,
   bg,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,6 +111,15 @@ const Table: React.FC<EnhancedTableProps> = ({
                       <Button onClick={() => handleUpdate?.(row.id)} bg={bg}>
                         {updateBtnText ? updateBtnText : "Update"}
                       </Button>
+                      {showSecondUBtn ? (
+                        <Button
+                          onClick={() => handlePaymentStatusUpdate?.(row.id)}
+                          bg={"bg-green-500"}
+                        >
+                          {"Update Payment Status"}
+                        </Button>
+                      ) : null}
+
                       {hideDeleteBtn ? null : (
                         <Button
                           bg="bg-red-600"

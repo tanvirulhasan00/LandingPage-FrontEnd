@@ -20,6 +20,7 @@ export default [
       "update_delivery_status/:orderId",
       "routes/update_delivery_status.tsx"
     ),
+    route("update_payment_status/:orderId", "routes/update_payment_status.tsx"),
     route("payment", "routes/payment.tsx"),
   ]),
   route("login", "routes/auth/login.tsx"),

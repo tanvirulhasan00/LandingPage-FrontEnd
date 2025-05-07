@@ -1,30 +1,28 @@
-import React from "react";
 import { isRouteErrorResponse } from "react-router";
-import Button from "~/components/button";
-import { columns } from "~/components/payment-column";
-import Table from "~/components/table";
 import type { Route } from "./+types/payment";
-
-const rows = [
-  { name: "Jane Doe", email: "jane@example.com", role: "Admin" },
-  { name: "John Smith", email: "john@example.com", role: "User" },
-  { name: "Sarah Lee", email: "sarah@example.com", role: "Manager" },
-  { name: "Tom Hardy", email: "tom@example.com", role: "User" },
-  { name: "Anna Kim", email: "anna@example.com", role: "Admin" },
-  { name: "Leo Grant", email: "leo@example.com", role: "Manager" },
-];
 
 const Payment = () => {
   return (
-    <div className="flex items-center justify-center mt-5 text-red-500">
-      This is a advance feature. contact for more.
+    <div className="flex flex-col items-center justify-center mt-5 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-2xl max-w-2xl mx-auto">
+      <h1 className="text-2xl font-semibold text-red-500 mb-3">
+        This is an advanced feature. Contact for more.
+      </h1>
+      <div className="mt-3 text-center space-y-2">
+        <h2 className="text-lg font-medium text-gray-800 dark:text-white">
+          Contact Information
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          <span className="font-semibold">Email:</span> eamil@mail.com
+        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          <span className="font-semibold">Phone Number:</span> 01900001122
+        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          <span className="font-semibold">Office Address:</span> Savar DOSH,
+          house 28, road 1
+        </p>
+      </div>
     </div>
-    // <div className="p-10">
-    //   <div className="mb-5 text-2xl p-1">
-    //     <h1>Payment List</h1>
-    //   </div>
-    //   <Table columns={columns} rows={rows} show="payment" />
-    // </div>
   );
 };
 
@@ -50,12 +48,6 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     <main className="pt-16 p-4 container mx-auto">
       <h1>{message}</h1>
       <p>Something went wrong!</p>
-      {/* <p>{details}</p> */}
-      {/* {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )} */}
     </main>
   );
 }

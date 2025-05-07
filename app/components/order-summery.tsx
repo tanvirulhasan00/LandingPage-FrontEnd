@@ -115,7 +115,7 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
             <div className="flex gap-3">
               <div hidden={number <= 1 ? true : false}>
                 <MinusCircleIcon
-                  className="text-gray-500 dark:text-gray-200 size-6 cursor-pointer"
+                  className="text-[#03254c] dark:text-[#ffff] size-6 cursor-pointer"
                   onClick={() => {
                     if (number > 1) {
                       const newQuantity = number - 1;
@@ -129,7 +129,7 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
               </div>
               <h1>{number}</h1>
               <PlusCircleIcon
-                className="text-gray-500 dark:text-gray-200 size-6 cursor-pointer"
+                className="text-[#03254c] dark:text-[#ffff] size-6 cursor-pointer"
                 onClick={() => {
                   const newQuantity = number + 1;
                   const newSubTotal = unitPrice * newQuantity;
@@ -166,7 +166,7 @@ const OrderSummery: React.FC<OrderSummeryProps> = ({
         </div>
         <Divider className="mt-5 mb-5" />
         <div className="p-5 flex gap-4">
-          <Button disabled={isLoading} className="w-full">
+          <Button bg="bg-[#03254c]" disabled={isLoading} className="w-full">
             {isLoading ? "Loading..." : "Confirm order"}
           </Button>
 

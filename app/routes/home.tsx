@@ -88,6 +88,7 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
 export default function Home() {
   const { product, shippingFeesData, success } =
     useLoaderData<typeof clientLoader>();
+
   const [selectedOption, setSelectedOption] = useState<string>("");
   const navigation = useNavigation();
   const [initialLoading, setInitialLoading] = useState(true);
@@ -111,14 +112,13 @@ export default function Home() {
       ) : (
         <div className="md:w-[90%] md:p-10 m-auto p-5 w-full">
           {/* customer logo */}
-          <div className="mb-3 flex gap-10 border-none  border-gray-200 p-5  rounded-md shadow-sm shadow-gray-500 items-center">
-            <img src="/favicon.ico" />
-            <h1>Company Name</h1>
+          <div className=" mb-3 flex gap-10 border-none  border-gray-200 p-5  rounded-md shadow-sm shadow-gray-500 items-center">
+            <img className="w-[3rem] bg-white" src="/favicon.ico" />
+            <h1>Cookie Software Ltd.</h1>
           </div>
           <div className="hidden max-lg:block">
             {/* <TimerCard /> */}
-            <AdCard />
-            <AdCard />
+            <AdCard product={product} />
             <CardWithSlider />
           </div>
           <Form method="post">
@@ -133,8 +133,7 @@ export default function Home() {
               <div id="order-summary" className="w-full">
                 <div className="hidden lg:block mb-3">
                   {/* <TimerCard /> */}
-                  <AdCard />
-                  <AdCard />
+                  <AdCard product={product} />
                   <CardWithSlider />
                 </div>
                 <OrderSummery
@@ -148,8 +147,8 @@ export default function Home() {
           </Form>
           {/* footer */}
           <div className="flex gap-10 border-none  border-gray-200 p-5  rounded-md items-center">
-            <img src="/favicon.ico" />
-            <h1>Copyright &copy; 2025 Cookies Software Ltd. Inc.</h1>
+            <img className="w-[3rem] bg-white" src="/favicon.ico" />
+            <h1>Copyright &copy; 2025 Cookie Software Ltd. Inc.</h1>
           </div>
         </div>
       )}
@@ -177,12 +176,6 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     <main className="pt-16 p-4 container mx-auto">
       <h1>{message}</h1>
       <p>Something went wrong!</p>
-      {/* <p>{details}</p> */}
-      {/* {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )} */}
     </main>
   );
 }

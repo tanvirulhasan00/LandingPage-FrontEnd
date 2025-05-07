@@ -103,7 +103,9 @@ export const columns = [
           className={`font-semibold ${
             {
               Paid: "text-green-500",
-              Pending: "text-red-500",
+              Pending: "text-yellow-500",
+              Failed: "text-red-500",
+              Refund: "text-blue-500",
             }[val] || ""
           }`}
         >

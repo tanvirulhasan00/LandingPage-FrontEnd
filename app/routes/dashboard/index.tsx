@@ -67,11 +67,11 @@ const Index = () => {
                   {new Date(user.createdDate).toLocaleString()}
                 </p>
               </div>
-              <div className="flex justify-end max-sm:justify-start">
+              {/* <div className="flex justify-end max-sm:justify-start">
                 <Link to={"#"}>
                   <Button>Change Password</Button>
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

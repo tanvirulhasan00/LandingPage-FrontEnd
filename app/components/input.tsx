@@ -15,7 +15,7 @@ const Input = ({
 }: InputProps) => {
   return (
     <div
-      className={`flex items-center rounded-md bg-white outline-1 -outline-offset-1  outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 ${wrapperClassName}`}
+      className={`flex items-center rounded-md bg-white outline-1 -outline-offset-1  outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-[#1167b1] ${wrapperClassName}`}
     >
       <input
         id={name}

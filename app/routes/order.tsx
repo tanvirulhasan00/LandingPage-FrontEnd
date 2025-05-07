@@ -29,6 +29,9 @@ const OrderCom = () => {
   const handleStatusUpdate = (id: number) => {
     navigate(`/dashboard/update_delivery_status/${id}`);
   };
+  const handlePaymentStatusUpdate = (id: number) => {
+    navigate(`/dashboard/update_payment_status/${id}`);
+  };
 
   return (
     <div className="p-10">
@@ -40,8 +43,10 @@ const OrderCom = () => {
         rows={order}
         show="order"
         handleUpdate={handleStatusUpdate}
+        handlePaymentStatusUpdate={handlePaymentStatusUpdate}
         hideDeleteBtn={true}
-        updateBtnText={"Update Status"}
+        showSecondUBtn={true}
+        updateBtnText={"Update Delivery Status"}
       />
     </div>
   );
